@@ -44,11 +44,12 @@ contract Staker is IERC721Receiver, ERC721Holder{
     }
 
     function unstake(uint256 _tokenId) public {
+        require(NFT.ownerOf(_tokenId) == msg.sender, "Caller is not the owner");
         uint256 reward = calculateReward(_tokenId);
         delete stakes[msg.sender][_tokenId];
         NFT.safeTransferFrom(address(this), msg.sender, _tokenId, "");
 
-        token.transfer(msg.sender, reward);
+        token.safeTransfer(msg.sender, reward);
     }
 
 }
